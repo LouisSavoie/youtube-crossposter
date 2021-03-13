@@ -1,0 +1,25 @@
+{
+  "name": "youtube-crossposter",
+  "version": "1.0.0",
+  "description": "Crossposts YouTube videos to other social media sites.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LouisSavoie/youtube-crossposter.git"
+  },
+  "author": "Louis Savoie",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LouisSavoie/youtube-crossposter/issues"
+  },
+  "homepage": "https://github.com/LouisSavoie/youtube-crossposter#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "node-cron": "^3.0.0",
+    "snoowrap": "^1.22.0",
+    "youtube-node": "^1.3.3"
+  }
+}
