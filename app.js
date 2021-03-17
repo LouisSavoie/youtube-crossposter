@@ -10,7 +10,7 @@ require('dotenv').config();
 // SETUP MODULES AND VARIABLES
 
 // setup for youtube
-const youtube.setKey(process.env.YOUTUBE_KEY);
+youtube.setKey(process.env.YOUTUBE_KEY);
 let youtubeSearchParams = {part: "snippet", channelId: "UC47EhkMV18WlRqV3VhUH3yg", order: "date", type: "video", safeSearch: "none"},
     videoTitle = "",
     videoURL = "https://www.youtube.com/watch?v=";
@@ -24,14 +24,26 @@ let youtubeSearchParams = {part: "snippet", channelId: "UC47EhkMV18WlRqV3VhUH3yg
 //   });
 
 // setup for reddit with user account credentials
-const otherRequester = new snoowrap({
+const reddit = new snoowrap({
     userAgent: process.env.REDDIT_USERAGENT,
     clientId: process.env.REDDIT_CLIENTID,
-    clientSecret: process.env.REDDIT_CLIENTSECRETE,
+    clientSecret: process.env.REDDIT_CLIENTSECRET,
     username: process.env.REDDIT_USERNAME,
     password: process.env.REDDIT_PASSWORD
   });
 
+let subreddit = "";
+
 // YOUTUBE SEARCH REQUEST
+youtube.search('', 1, youtubeSearchParams, (err, res) => {
+  if (err) {
+    console.log(err);
+  } else {
+    videoTitle = res.items[0].snippet.title;
+    console.log(videoTitle);
+    videoURL += res.items[0].id.videoId;
+    console.log(videoURL);
+  }
+});
 
 // REDDIT SUBMIT LINK REQUEST
