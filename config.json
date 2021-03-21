@@ -1,0 +1,12 @@
+{
+    "youtubeSearchParams": {
+        "part": "snippet",
+        "channelId": "UC47EhkMV18WlRqV3VhUH3yg",
+        "order": "date",
+        "type": "video",
+        "safeSearch": "none"
+    },
+    "subreddit": "LouisSavoie",
+    "cronYoutube": "1 1 * * * *",
+    "cronReddit": "2 1 * * * *"
+}

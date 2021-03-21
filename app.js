@@ -4,18 +4,19 @@ const cron      = require('node-cron'),
       YouTube   = require('youtube-node'),
       snoowrap = require('snoowrap'),
       youtube   = new YouTube();
+      CONFIG = require('./config.json');
 
 require('dotenv').config();
 
 // SETUP MODULES AND VARIABLES
 
-// setup for youtube
+// setup youtube
 youtube.setKey(process.env.YOUTUBE_KEY);
-let youtubeSearchParams = {part: "snippet", channelId: "UC47EhkMV18WlRqV3VhUH3yg", order: "date", type: "video", safeSearch: "none"},
+let youtubeSearchParams = CONFIG.youtubeSearchParams,
     videoTitle = "",
     videoURL = "https://www.youtube.com/watch?v=";
 
-// setup for reddit with Token
+// setup reddit with Token
 // const reddit = new snoowrap({
 //     userAgent: 'put your user-agent string here',
 //     clientId: 'put your client id here',
@@ -23,7 +24,7 @@ let youtubeSearchParams = {part: "snippet", channelId: "UC47EhkMV18WlRqV3VhUH3yg
 //     refreshToken: 'put your refresh token here'
 //   });
 
-// setup for reddit with user account credentials
+// setup reddit with account credentials
 const reddit = new snoowrap({
     userAgent: process.env.REDDIT_USERAGENT,
     clientId: process.env.REDDIT_CLIENTID,
@@ -31,8 +32,7 @@ const reddit = new snoowrap({
     username: process.env.REDDIT_USERNAME,
     password: process.env.REDDIT_PASSWORD
 });
-
-let subreddit = "LouisSavoie";
+let subreddit = CONFIG.subreddit;
 
 // YOUTUBE SEARCH REQUEST
 function getYoutube(){
@@ -57,12 +57,12 @@ function postReddit(){
 };
 
 // Cron Scheduling
-cron.schedule('1 1 * * * *', () => {
+cron.schedule(CONFIG.cronYoutube, () => {
     console.log("Running GET YouTube Task.");
     getYoutube();
 });
 
-cron.schedule('2 1 * * * *', () => {
+cron.schedule(CONFIG.cronReddit, () => {
     console.log("Running POST Reddit Task.");
     postReddit();
 });
