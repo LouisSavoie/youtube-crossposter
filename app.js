@@ -35,18 +35,24 @@ const reddit = new snoowrap({
 let subreddit = "LouisSavoie";
 
 // YOUTUBE SEARCH REQUEST
-youtube.search('', 1, youtubeSearchParams, (err, res) => {
-    if (err) {
-        console.log(err);
-    } else {
-        videoTitle = res.items[0].snippet.title;
-        videoURL += res.items[0].id.videoId;
-    }
-});
-
+function getYoutube(){
+    youtube.search('', 1, youtubeSearchParams, (err, res) => {
+        if (err) {
+            console.log(err);
+        } else {
+            videoTitle = res.items[0].snippet.title;
+            videoURL += res.items[0].id.videoId;
+        }
+    });
+};
 
 // REDDIT SUBMIT LINK REQUEST
-reddit.getSubreddit(subreddit).submitLink({
-    title: videoTitle,
-    url: videoURL
-});
+function postReddit(){
+    reddit.getSubreddit(subreddit).submitLink({
+        title: videoTitle,
+        url: videoURL
+    });
+};
+
+getYoutube();
+postReddit();
