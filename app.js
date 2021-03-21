@@ -36,6 +36,7 @@ let subreddit = "LouisSavoie";
 
 // YOUTUBE SEARCH REQUEST
 function getYoutube(){
+    console.log("Searching YouTube.");
     youtube.search('', 1, youtubeSearchParams, (err, res) => {
         if (err) {
             console.log(err);
@@ -48,11 +49,20 @@ function getYoutube(){
 
 // REDDIT SUBMIT LINK REQUEST
 function postReddit(){
+    console.log("Submitting to reddit.");
     reddit.getSubreddit(subreddit).submitLink({
         title: videoTitle,
         url: videoURL
     });
 };
 
-getYoutube();
-postReddit();
+// Cron Scheduling
+cron.schedule('1 1 * * * *', () => {
+    console.log("Running GET YouTube Task.");
+    getYoutube();
+});
+
+cron.schedule('2 1 * * * *', () => {
+    console.log("Running POST Reddit Task.");
+    postReddit();
+});
