@@ -15,7 +15,7 @@ let youtubeSearchParams = {part: "snippet", channelId: "UC47EhkMV18WlRqV3VhUH3yg
     videoTitle = "",
     videoURL = "https://www.youtube.com/watch?v=";
 
-// setup for reddit with OAuth
+// setup for reddit with Token
 // const reddit = new snoowrap({
 //     userAgent: 'put your user-agent string here',
 //     clientId: 'put your client id here',
@@ -30,20 +30,23 @@ const reddit = new snoowrap({
     clientSecret: process.env.REDDIT_CLIENTSECRET,
     username: process.env.REDDIT_USERNAME,
     password: process.env.REDDIT_PASSWORD
-  });
+});
 
-let subreddit = "";
+let subreddit = "LouisSavoie";
 
 // YOUTUBE SEARCH REQUEST
 youtube.search('', 1, youtubeSearchParams, (err, res) => {
-  if (err) {
-    console.log(err);
-  } else {
-    videoTitle = res.items[0].snippet.title;
-    console.log(videoTitle);
-    videoURL += res.items[0].id.videoId;
-    console.log(videoURL);
-  }
+    if (err) {
+        console.log(err);
+    } else {
+        videoTitle = res.items[0].snippet.title;
+        videoURL += res.items[0].id.videoId;
+    }
 });
 
+
 // REDDIT SUBMIT LINK REQUEST
+reddit.getSubreddit(subreddit).submitLink({
+    title: videoTitle,
+    url: videoURL
+});
