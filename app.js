@@ -15,6 +15,7 @@ require('dotenv').config();
 youtube.setKey(process.env.YOUTUBE_KEY);
 let youtubeSearchParams = CONFIG.youtubeSearchParams,
     videoUrlPrefix = CONFIG.videoUrlPrefix;
+let videoInfo = {};
 
 // setup reddit with Token
 // const reddit = new snoowrap({
@@ -34,9 +35,26 @@ const reddit = new snoowrap({
 });
 let subreddit = CONFIG.subreddit;
 
+let post = false;
+
 // FS FUNCTIONS
 
 // FS Read
+function readVideoInfo() {
+    // read json string from videoInfo.json file
+    fs.readFile('./videoInfo.json', (err, jsonString) => {
+        if (err) {
+            console.log("Error reading file videoInfo.json:", err);
+        }
+        try {
+            // parse json string and save to global constant
+            videoInfo = JSON.parse(jsonString);
+            console.log("videoInfo read from videoInfo.json file.");
+        } catch (err) {
+            console.log("Error parsing JSON string from videoInfo.json:", err);
+        }
+    });
+};
 
 // FS Write
 function writeVideoInfo(title, url) {
@@ -46,7 +64,7 @@ function writeVideoInfo(title, url) {
             url: url
         }
     );
-    // write info to file
+    // write info to videoInfo.json file
     fs.writeFile('./videoInfo.json', info, err => {
         if (err) {
             console.log("Error writing videoInfo file", err)
@@ -64,8 +82,19 @@ function getYoutube(){
         if (err) {
             console.log(err);
         } else {
-            // write video title and url (from prefix and id) to file
-            writeVideoInfo(res.items[0].snippet.title, videoUrlPrefix += res.items[0].id.videoId);
+            // read video info from videoInfo.json and compare to change post flag
+            readVideoInfo();
+            if (videoUrlPrefix += res.items[0].id.videoId == videoInfo.url) {
+                console.log("No new video yet, videoInfo will not be updated.");
+                post = false;
+            } else {
+                // write video title and url (from prefix and id) to file
+                console.log("New video found.")
+                writeVideoInfo(res.items[0].snippet.title, videoUrlPrefix += res.items[0].id.videoId);
+                videoInfo.title = res.items[0].snippet.title;
+                videoInfo.url = videoUrlPrefix += res.items[0].id.videoId;
+                post = true;
+            }
         }
     });
 };
@@ -74,8 +103,8 @@ function getYoutube(){
 function postReddit(){
     console.log("Submitting to reddit.");
     reddit.getSubreddit(subreddit).submitLink({
-        title: videoTitle,
-        url: videoURL
+        title: videoInfo.title,
+        url: videoInfo.url
     });
 };
 
@@ -86,6 +115,13 @@ cron.schedule(CONFIG.cronYoutube, () => {
 });
 
 cron.schedule(CONFIG.cronReddit, () => {
-    console.log("Running POST Reddit Task.");
-    postReddit();
+    if (post) {
+        console.log("Running POST Reddit Task.");
+        postReddit();
+    } else {
+        console.log("No new video to post to reddit.");
+    }
 });
+
+// RUNNING MESSAGE
+console.log("YouTube Crossposter now running.")

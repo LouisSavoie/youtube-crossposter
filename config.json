@@ -8,6 +8,6 @@
     },
     "videoUrlPrefix": "https://www.youtube.com/watch?v=",
     "subreddit": "LouisSavoie",
-    "cronYoutube": "1 16 * * * *",
-    "cronReddit": "2 0 * * * *"
+    "cronYoutube": "1 1 * * * *",
+    "cronReddit": "2 1 * * * *"
 }
