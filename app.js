@@ -2,9 +2,10 @@
 
 const cron      = require('node-cron'),
       YouTube   = require('youtube-node'),
-      snoowrap = require('snoowrap'),
-      youtube   = new YouTube();
-      CONFIG = require('./config.json');
+      snoowrap  = require('snoowrap'),
+      youtube   = new YouTube(),
+      CONFIG    = require('./config.json'),
+      fs        = require('fs');
 
 require('dotenv').config();
 
@@ -13,8 +14,7 @@ require('dotenv').config();
 // setup youtube
 youtube.setKey(process.env.YOUTUBE_KEY);
 let youtubeSearchParams = CONFIG.youtubeSearchParams,
-    videoTitle = "",
-    videoURL = "https://www.youtube.com/watch?v=";
+    videoUrlPrefix = CONFIG.videoUrlPrefix;
 
 // setup reddit with Token
 // const reddit = new snoowrap({
@@ -34,15 +34,38 @@ const reddit = new snoowrap({
 });
 let subreddit = CONFIG.subreddit;
 
+// FS FUNCTIONS
+
+// FS Read
+
+// FS Write
+function writeVideoInfo(title, url) {
+    // create string from object to write
+    let info = JSON.stringify({
+            title: title,
+            url: url
+        }
+    );
+    // write info to file
+    fs.writeFile('./videoInfo.json', info, err => {
+        if (err) {
+            console.log("Error writing videoInfo file", err)
+        } else {
+            console.log("videoInfo.json file updated.")
+        }
+    });
+};
+
 // YOUTUBE SEARCH REQUEST
 function getYoutube(){
     console.log("Searching YouTube.");
+    // search youtube channel for video title and id
     youtube.search('', 1, youtubeSearchParams, (err, res) => {
         if (err) {
             console.log(err);
         } else {
-            videoTitle = res.items[0].snippet.title;
-            videoURL += res.items[0].id.videoId;
+            // write video title and url (from prefix and id) to file
+            writeVideoInfo(res.items[0].snippet.title, videoUrlPrefix += res.items[0].id.videoId);
         }
     });
 };
