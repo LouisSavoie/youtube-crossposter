@@ -92,8 +92,7 @@ function getYoutube(){
                 // write video title and url (from prefix and id) to file and variables
                 console.log("New video found.")
                 writeVideoInfo(res.items[0].snippet.title, videoUrlPrefix += res.items[0].id.videoId);
-                videoInfo.title = res.items[0].snippet.title;
-                videoInfo.url = videoUrlPrefix += res.items[0].id.videoId;
+                videoInfo = {title: res.items[0].snippet.title, url: videoUrlPrefix + res.items[0].id.videoId}
                 post = true;
             }
         }
@@ -111,12 +110,12 @@ function postReddit(){
 
 // Cron Scheduling
 cron.schedule(CONFIG.cronYoutube, () => {
-    console.log("Running GET YouTube Task.");
+    console.log("=====\nRunning GET YouTube Task.");
     getYoutube();
 });
 
 cron.schedule(CONFIG.cronReddit, () => {
-    console.log("Running POST reddit Task.");
+    console.log("=====\nRunning POST reddit Task.");
     if (post) {
         postReddit();
     } else {
@@ -126,4 +125,4 @@ cron.schedule(CONFIG.cronReddit, () => {
 
 // RUN
 readVideoInfo();
-console.log("YouTube Crossposter now running.")
+console.log("=====\nYouTube Crossposter now running.")
