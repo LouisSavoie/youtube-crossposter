@@ -1,5 +1,7 @@
 // REQUIRES AND NEW INSTANCES
 
+const { resolve } = require('path');
+
 const cron      = require('node-cron'),
       YouTube   = require('youtube-node'),
       snoowrap  = require('snoowrap'),
@@ -83,12 +85,11 @@ function getYoutube(){
             console.log(err);
         } else {
             // read video info from videoInfo.json and compare to change post flag
-            readVideoInfo();
-            if (videoUrlPrefix += res.items[0].id.videoId == videoInfo.url) {
+            if (videoUrlPrefix + res.items[0].id.videoId == videoInfo.url) {
                 console.log("No new video yet, videoInfo will not be updated.");
                 post = false;
             } else {
-                // write video title and url (from prefix and id) to file
+                // write video title and url (from prefix and id) to file and variables
                 console.log("New video found.")
                 writeVideoInfo(res.items[0].snippet.title, videoUrlPrefix += res.items[0].id.videoId);
                 videoInfo.title = res.items[0].snippet.title;
@@ -101,7 +102,7 @@ function getYoutube(){
 
 // REDDIT SUBMIT LINK REQUEST
 function postReddit(){
-    console.log("Submitting to reddit.");
+    console.log("Posting new video (" + videoInfo.title + ") to r/" + CONFIG.subreddit + ".");
     reddit.getSubreddit(subreddit).submitLink({
         title: videoInfo.title,
         url: videoInfo.url
@@ -115,13 +116,14 @@ cron.schedule(CONFIG.cronYoutube, () => {
 });
 
 cron.schedule(CONFIG.cronReddit, () => {
+    console.log("Running POST reddit Task.");
     if (post) {
-        console.log("Running POST Reddit Task.");
         postReddit();
     } else {
         console.log("No new video to post to reddit.");
     }
 });
 
-// RUNNING MESSAGE
+// RUN
+readVideoInfo();
 console.log("YouTube Crossposter now running.")
