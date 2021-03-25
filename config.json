@@ -1,0 +1,13 @@
+{
+    "youtubeSearchParams": {
+        "part": "snippet",
+        "channelId": "",
+        "order": "date",
+        "type": "video",
+        "safeSearch": "none"
+    },
+    "videoUrlPrefix": "https://www.youtube.com/watch?v=",
+    "subreddit": "",
+    "cronYoutube": "1 1 * * * *",
+    "cronReddit": "2 1 * * * *"
+}
