@@ -43,4 +43,4 @@ YouTube Crossposter is a Node.js server app that searches a given YouTube channe
 
     Make sure to leave atleast 1 second between when the YouTube search and the reddit post goes off to allow the search data to come back and be writen to variables and to file. The API calls have been left non-blocking to reduce complexity since task scheduling can account for the delays anyway.
 
-7. Install on your server or run locally and start app with `npm start`.
+7. Install on your server or run locally, install node modules with command `npm install`, and start app with `npm start`.
